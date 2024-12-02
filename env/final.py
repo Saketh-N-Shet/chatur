@@ -5,7 +5,6 @@ import shutil
 from main import encode, decode, convert_all_bin_to_jpg
 
 def ascii_key_to_binary(key):
-    
     return ''.join(format(ord(char), '08b') for char in key)
 
 # Helper function to clear temporary folders
@@ -14,8 +13,79 @@ def clear_temp_folders():
         shutil.rmtree(folder, ignore_errors=True)
         os.makedirs(folder, exist_ok=True)
 
+# Inject CSS for styling
+def inject_css():
+    st.markdown("""
+    <style>
+        /* General Body Styling */
+        body {
+            background: linear-gradient(90deg, #f3f4f6, #e3e4e6);
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Header Styling */
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid #4a90e2;
+            margin-bottom: 20px;
+        }
+
+        /* Tabs Styling */
+        .stTabs [role="tablist"] {
+            border-bottom: 2px solid #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        /* File Uploader and Buttons */
+        .stFileUploader {
+            border: 2px dashed #4a90e2;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #357abd;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            padding: 10px;
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Rounded Containers */
+        .rounded-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Set up the Streamlit app
 st.set_page_config(page_title="File to GIF Encoder/Decoder", layout="centered")
+inject_css()  # Inject the CSS
+
 st.title("HYBRID CRYPTOSYSTEM TO SECURE FILE IN GIF")
 
 # Tabs for Encode and Decode
@@ -23,8 +93,9 @@ tab1, tab2 = st.tabs(["Encode", "Decode"])
 
 # Encode Tab
 with tab1:
+    st.markdown('<div class="rounded-container">', unsafe_allow_html=True)
     st.header("Encode a File into GIF")
-    uploaded_file = st.file_uploader("Upload a file to encode", type=["txt", "jpg", "png", "mp3", "bin","m4a"])
+    uploaded_file = st.file_uploader("Upload a file to encode", type=["txt", "jpg", "png", "mp3", "bin", "m4a"])
 
     resolution = st.selectbox(
         "Select GIF Resolution",
@@ -49,9 +120,8 @@ with tab1:
                 f.write(uploaded_file.read())
             
             st.write("Encoding in progress...")
-            
             try:
-                gif_path = encode(input_file_path, binary_key ,res)
+                gif_path = encode(input_file_path, binary_key, res)
                 st.success("Encoding completed!")
                 st.image(gif_path, caption="Encoded GIF")
                 st.download_button("Download Encoded GIF", data=open(gif_path, "rb"), file_name=os.path.basename(gif_path))
@@ -59,9 +129,11 @@ with tab1:
                 st.error(f"Error during encoding: {e}")
         else:
             st.warning("Please upload a file to encode.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Decode Tab
 with tab2:
+    st.markdown('<div class="rounded-container">', unsafe_allow_html=True)
     st.header("Decode a GIF into its Original File")
     uploaded_gif = st.file_uploader("Upload a GIF to decode", type=["gif"])
 
@@ -99,12 +171,7 @@ with tab2:
                 st.error(f"Error during decoding: {e}")
         else:
             st.warning("Please upload a GIF to decode.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer
-st.sidebar.header("About")
-st.sidebar.info(
-    """
-    This app encodes files into GIFs and decodes them back into the original files 
-    using advanced cryptographic and image processing techniques.
-    """
-)
+st.markdown('<div class="footer">This app encodes and decodes files into GIFs using advanced cryptographic techniques.</div>', unsafe_allow_html=True)
